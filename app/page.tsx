@@ -1,116 +1,99 @@
 "use client"
 
-import type React from "react"
-import { useRef, useState } from "react"
-import Sidebar from "@/components/sidebar"
-import Header from "@/components/header"
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 
-export default function ImportPage() {
-  const [dragOver, setDragOver] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [fileName, setFileName] = useState("")
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setDragOver(true)
-  }
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault()
-    setDragOver(false)
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setDragOver(false)
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      handleFileUpload(file)
-    }
-  }
-
-  const handleFileUpload = (file: File) => {
-    setFileName(file.name)
-    // Simulate progress update
-    setProgress(0)
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          return 100
-        }
-        return prev + 10
-      })
-    }, 200)
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      handleFileUpload(file)
-    }
-  }
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click()
-  }
+export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [rememberPassword, setRememberPassword] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-blue-600">
-      <Sidebar />
-      <div className="flex-1">
-        <Header />
-        <div className="p-8 bg-gray-200 min-h-screen">
-          <h1 className="text-4xl font-bold text-gray-900 mb-8">Import New Leads</h1>
+    <div className="flex flex-col md:flex-row min-h-screen">
+      {/* Left Side - Login Form */}
+      <div className="md:w-1/2 bg-white clip-left-banner relative p-8 md:p-12 flex items-center justify-center">
+        <div className="w-full max-w-md z-10">
+          <h1 className="text-5xl font-bold tracking-widest text-blue-900 mb-4 uppercase">
+            Welcome Back
+          </h1>
+          <p className="text-gray-700 mb-10 text-base">Enter your details</p>
 
-          <div className="max-w-6xl mx-auto">
-            <div
-              className={`border-4 border-dashed border-gray-600 rounded-2xl p-20 text-center bg-white transition-colors ${
-                dragOver ? "border-blue-500 bg-blue-50" : ""
-              }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Drag and Drop new Lead File</h2>
-              <p className="text-gray-600 text-xl mb-8">CSV or Excel File</p>
-              
-              <Button
-                onClick={triggerFileInput}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-xl font-semibold rounded-full"
-              >
-                Browse
-              </Button>
-
-              <input
-                type="file"
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileSelect}
+          <form className="space-y-8">
+            <div>
+              <Label htmlFor="email" className="text-gray-700 font-medium text-lg block mb-2">
+                Email ID
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-12 border border-gray-400 text-lg"
               />
-
-              {fileName && (
-                <p className="text-green-700 font-medium mt-6">Uploaded: {fileName}</p>
-              )}
             </div>
 
-            <div className="mt-8">
-              <div className="bg-gray-600 rounded-full h-8 overflow-hidden relative">
-                <div
-                  className="bg-blue-600 h-full transition-all duration-300 flex items-center justify-center"
-                  style={{ width: `${progress}%` }}
-                >
-                  <span className="text-white font-semibold text-lg absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    {progress < 100 ? `${progress}%` : "Upload Complete"}
-                  </span>
-                </div>
+            <div>
+              <Label htmlFor="password" className="text-gray-700 font-medium text-lg block mb-2">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-12 border border-gray-400 text-lg"
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="remember"
+                  checked={rememberPassword}
+                  onCheckedChange={(checked) => setRememberPassword(Boolean(checked))}
+                />
+                <Label htmlFor="remember" className="text-gray-600">
+                  Remember Password
+                </Label>
               </div>
+              <Link href="/forgot-password" className="text-blue-700 hover:underline">
+                Forgot Password
+              </Link>
             </div>
-          </div>
+
+            <Link href="/dashboard" className="block">
+              <Button className="w-full bg-orange-400 hover:bg-orange-500 text-white py-3 text-lg font-semibold">
+                Sign In
+              </Button>
+            </Link>
+
+            <Button
+              variant="outline"
+              className="w-full py-3 text-lg border border-gray-300 text-blue-900 font-medium hover:bg-gray-100"
+            >
+              Sign in with Google
+            </Button>
+          </form>
         </div>
+      </div>
+
+      {/* Right Side - Illustration & Branding */}
+      <div className="md:w-1/2 bg-blue-900 text-white relative flex items-center justify-center p-4 md:p-8">
+        <div className="absolute top-10 left-10 text-6xl md:text-8xl font-bold uppercase tracking-tight leading-none z-10">
+          LEAD AI
+        </div>
+        <Image
+          src="/images/Login_img.png"
+          alt="Team collaboration illustration"
+          width={700}
+          height={500}
+          className="z-10 w-full max-w-[600px] h-auto"
+        />
       </div>
     </div>
   )

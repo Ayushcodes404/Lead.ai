@@ -1,15 +1,16 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Sidebar from "@/components/sidebar"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 
 export default function ImportPage() {
   const [dragOver, setDragOver] = useState(false)
-  const [progress] = useState(45)
+  const [progress, setProgress] = useState(0)
+  const [fileName, setFileName] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
@@ -24,6 +25,36 @@ export default function ImportPage() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) {
+      handleFileUpload(file)
+    }
+  }
+
+  const handleFileUpload = (file: File) => {
+    setFileName(file.name)
+    // Simulate progress update
+    setProgress(0)
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          return 100
+        }
+        return prev + 10
+      })
+    }, 200)
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      handleFileUpload(file)
+    }
+  }
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click()
   }
 
   return (
@@ -45,9 +76,25 @@ export default function ImportPage() {
             >
               <h2 className="text-4xl font-bold text-gray-900 mb-4">Drag and Drop new Lead File</h2>
               <p className="text-gray-600 text-xl mb-8">CSV or Excel File</p>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-xl font-semibold rounded-full">
+              
+              <Button
+                onClick={triggerFileInput}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-xl font-semibold rounded-full"
+              >
                 Browse
               </Button>
+
+              <input
+                type="file"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+
+              {fileName && (
+                <p className="text-green-700 font-medium mt-6">Uploaded: {fileName}</p>
+              )}
             </div>
 
             <div className="mt-8">
@@ -57,7 +104,7 @@ export default function ImportPage() {
                   style={{ width: `${progress}%` }}
                 >
                   <span className="text-white font-semibold text-lg absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    Progress Bar
+                    {progress < 100 ? `${progress}%` : "Upload Complete"}
                   </span>
                 </div>
               </div>
