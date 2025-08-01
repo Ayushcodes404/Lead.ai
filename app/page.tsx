@@ -18,7 +18,7 @@ export default function LoginPage() {
       {/* Left Side - Login Form */}
       <div className="md:w-1/2 bg-white clip-left-banner relative p-8 md:p-12 flex items-center justify-center">
         <div className="w-full max-w-md z-10">
-          <h1 className="text-5xl font-bold tracking-widest text-blue-900 mb-4 uppercase">
+          <h1 className="text-4xl font-bold tracking-widest text-blue-900 mb-4 uppercase">
             Welcome Back
           </h1>
           <p className="text-gray-700 mb-10 text-base">Enter your details</p>
@@ -84,15 +84,12 @@ export default function LoginPage() {
 
       {/* Right Side - Illustration & Branding */}
       <div className="md:w-1/2 bg-blue-900 text-white relative flex items-center justify-center p-4 md:p-8">
-        <div className="absolute top-10 left-10 text-6xl md:text-8xl font-bold uppercase tracking-tight leading-none z-10">
-          LEAD AI
-        </div>
         <Image
           src="/images/Login_img.png"
           alt="Team collaboration illustration"
-          width={700}
-          height={500}
-          className="z-10 w-full max-w-[600px] h-auto"
+          layout="fill"
+          objectFit="cover"
+          className="w-auto h-full"
         />
       </div>
     </div>
